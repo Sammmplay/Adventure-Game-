@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     
     private void Start() {
         _rb = GetComponent<Rigidbody2D>();
+        currentHealth = maxHealth;
     }
     private void OnEnable() {
         _moveAction.Enable();
@@ -53,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         
-        Debug.Log(currentHealth + "/" + maxHealth);
+        UIHandlerHealth.Instance.SetHealthValue(currentHealth/(float)maxHealth);
     }
     void Movement() {
         _dir = _moveAction.ReadValue<Vector2>();

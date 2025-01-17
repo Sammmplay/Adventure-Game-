@@ -11,8 +11,9 @@ public class Collectibles : MonoBehaviour
         PlayerController controller = collision.GetComponent<PlayerController>();
 
 
-        if (controller != null) {
-            controller.ChangeHealth(-1);
+        if (controller != null && controller.health<controller.maxHealth) {
+            controller.ChangeHealth((int)_value);
+            Destroy(gameObject);
         }
     }
 }
