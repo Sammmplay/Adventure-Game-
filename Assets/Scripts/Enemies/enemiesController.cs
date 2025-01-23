@@ -12,9 +12,12 @@ public class enemiesController : MonoBehaviour
     int direction = 1;
     Rigidbody2D _rb;
     [SerializeField] float damageColission = 15;
+    bool broken = true;
+    Animator _anim;
     private void Start() {
         _rb= GetComponent<Rigidbody2D>();
         timer = changeTime;
+        _anim = GetComponent<Animator>();
     }
     private void Update() {
         timer -= Time.deltaTime;
@@ -24,17 +27,28 @@ public class enemiesController : MonoBehaviour
         }
     }
     private void FixedUpdate() {
+        if (!broken) return;
         MovementEnemie();
     }
     void MovementEnemie() {
-
+        
+        
         Vector2 position = _rb.position;
         if (vertical) {
+            _anim.SetFloat("MoveX", 0);
+            _anim.SetFloat("MoveY", direction);
             position.y = position.y + _speed * direction * Time.fixedDeltaTime;
         } else {
             position.x = position.x + _speed * direction * Time.fixedDeltaTime;
+            _anim.SetFloat("MoveX", direction);
+            _anim.SetFloat("MoveY", 0);
         }
         _rb.MovePosition(position);
+    }
+    public void Fix() {
+        _anim.SetTrigger("Fixed");
+        broken = false;
+        _rb.simulated = false;
     }
     private void OnTriggerEnter2D(Collider2D collision) {
         PlayerController player = collision.GetComponent<PlayerController>();
