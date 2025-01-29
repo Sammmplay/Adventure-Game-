@@ -673,11 +673,32 @@ MonoBehaviour:
       m_Action: Move
       m_Flags: 8
     m_Flags: 0
-  _slidelife: {fileID: 0}
+  _shoot:
+    m_Name: Shoot
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 6b8abdf5-a324-46d0-a2de-5c5a87d9dcec
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  _interact:
+    m_Name: Interact
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: aa7a106c-b2fe-42ca-919d-d7082b5e3331
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
   _velocity: 2
   _dir: {x: 0, y: 0}
   maxHealth: 100
+  _prefabBullet: {fileID: 0}
   timeInvincible: 2
+  _moveDirection: {x: 1, y: 0}
+  _audioClips: []
+  _audiosource: {fileID: 0}
 --- !u!50 &6363019347706074311
 Rigidbody2D:
   serializedVersion: 4

@@ -12,18 +12,19 @@ public class Proyectiles : MonoBehaviour
         _rb.AddForce(_dir * force);
     }
     private void Update() {
-        if (transform.position.magnitude > 100.0f) {
+        if (transform.position.magnitude > 1000) {
             Destroy(gameObject);
         }
     }
     private void OnTriggerEnter2D(Collider2D collision) {
-        enemiesController enemy = collision.GetComponent<enemiesController>();
+        if(collision.TryGetComponent<enemiesController>(out enemiesController enemy)) {
+            enemy.Fix();
+            Destroy(gameObject);
+        }
+        /*enemiesController enemy = collision.GetComponent<enemiesController>();
         if (enemy != null) {
             enemy.Fix();
-        }
-        Destroy(gameObject);
+        }*/
+        
     }
-    void OnCollisionEnter2D(Collision2D other) {
-        Destroy(gameObject);
-  }
 }

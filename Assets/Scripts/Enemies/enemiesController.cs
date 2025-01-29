@@ -8,13 +8,20 @@ public class enemiesController : MonoBehaviour
     public float _speed;
     public bool vertical;
     public float changeTime = 3.0f;
+
+    public ParticleSystem smokeEffect;
+    public ParticleSystem instantiateParticle;
+
     [SerializeField] float timer;
     int direction = 1;
     Rigidbody2D _rb;
     [SerializeField] float damageColission = 15;
     bool broken = true;
     Animator _anim;
+
+    AudioSource _audioSource;
     private void Start() {
+        _audioSource = GetComponent<AudioSource>();
         _rb= GetComponent<Rigidbody2D>();
         timer = changeTime;
         _anim = GetComponent<Animator>();
@@ -46,9 +53,15 @@ public class enemiesController : MonoBehaviour
         _rb.MovePosition(position);
     }
     public void Fix() {
-        _anim.SetTrigger("Fixed");
         broken = false;
         _rb.simulated = false;
+        _anim.SetTrigger("Fixed");
+        if(instantiateParticle!= null) {
+            Instantiate(instantiateParticle.gameObject, transform.position, Quaternion.identity);
+        }
+        
+        smokeEffect.Stop();
+        _audioSource.Stop();
     }
     private void OnTriggerEnter2D(Collider2D collision) {
         PlayerController player = collision.GetComponent<PlayerController>();

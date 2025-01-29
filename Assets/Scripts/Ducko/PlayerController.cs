@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     public InputAction _moveAction;
-
+    public InputAction _shoot;
+    public InputAction _interact;
     public float _velocity;
 
     Rigidbody2D _rb;
@@ -27,13 +28,20 @@ public class PlayerController : MonoBehaviour
     [Header("Animacion")]
     Animator _anim;
     [SerializeField] Vector2 _moveDirection = new Vector2(1, 0);
+    [Header("Sounds")]
+    [SerializeField] AudioClip[] _audioClips;
+    [SerializeField] AudioSource _audiosource;
+     
     private void Start() {
         _rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
+        _audiosource = GetComponent<AudioSource>();
         currentHealth = maxHealth;
     }
     private void OnEnable() {
         _moveAction.Enable();
+        _interact.Enable();
+        _shoot.Enable();
     }
     private void Update() {
         if (isInvincible) {
@@ -42,9 +50,12 @@ public class PlayerController : MonoBehaviour
                 isInvincible = false;
             }
         }
-        
+        if (_interact.WasPressedThisFrame()) {
+           
+            FindFriend();
+        }
 
-        if (Input.GetKeyDown(KeyCode.C)) {
+        if (_shoot.WasPressedThisFrame()) {
             Lauch();
         }
     }
@@ -58,13 +69,17 @@ public class PlayerController : MonoBehaviour
             }
             isInvincible = true;
             damageCooldown = timeInvincible;
+            PlaySound(_audioClips[2]);
             _anim.SetTrigger("Hit");
+        } else {
+            PlaySound(_audioClips[0]);
         }
-
-
+        
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
         
         UIHandlerHealth.Instance.SetHealthValue(currentHealth/(float)maxHealth);
+        
+        Debug.Log("tienes "+ currentHealth+ " de vida");   
     }
     void Movement() {
         _dir = _moveAction.ReadValue<Vector2>();
@@ -80,12 +95,30 @@ public class PlayerController : MonoBehaviour
         _rb.MovePosition(position);
     }
     void Lauch() {
+        _anim.SetTrigger("Shoot");
         GameObject _bullet = Instantiate(_prefabBullet, _rb.position + Vector2.up * 0.5f, Quaternion.identity);
         Proyectiles _scrip = _bullet.GetComponent<Proyectiles>();
-        _scrip.Lauch(_dir, 300);
-        _anim.SetTrigger("Shoot");
+        _scrip.Lauch(_moveDirection, 300);
+        PlaySound(_audioClips[1]);
+        
+        
+    }
+    void FindFriend() {
+        Debug.Log("Lanzando un rayo");
+        RaycastHit2D hit = Physics2D.Raycast(_rb.position, _moveDirection, 1.5f, LayerMask.GetMask("NPC"));
+        if(hit.collider != null ) {
+            Debug.Log("detecto un collider");
+            if (hit.collider.CompareTag("NPC")) {
+                UIHandlerHealth.Instance.DisplayDialogue();
+            }
+        }
+    }
+    public void PlaySound(AudioClip clip) {
+        _audiosource.PlayOneShot(clip);
     }
     private void OnDisable() {
         _moveAction.Disable();
+        _interact.Disable();
+        _shoot.Disable();
     }
 }
