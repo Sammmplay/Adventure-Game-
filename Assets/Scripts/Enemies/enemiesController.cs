@@ -25,6 +25,7 @@ public class enemiesController : MonoBehaviour
         _rb= GetComponent<Rigidbody2D>();
         timer = changeTime;
         _anim = GetComponent<Animator>();
+        EnemiesContainer.Instance.AddEnemies(this);
     }
     private void Update() {
         timer -= Time.deltaTime;
@@ -59,7 +60,7 @@ public class enemiesController : MonoBehaviour
         if(instantiateParticle!= null) {
             Instantiate(instantiateParticle.gameObject, transform.position, Quaternion.identity);
         }
-        
+        EnemiesContainer.Instance.RemoveEnemies(this);
         smokeEffect.Stop();
         _audioSource.Stop();
     }
